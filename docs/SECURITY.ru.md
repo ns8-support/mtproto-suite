@@ -60,7 +60,7 @@
 
 ### Как сообщить
 
-**Email:** ns8sup@gmail.com (placeholder — настройте реальный email)
+**Email:** ns8sup@gmail.com
 
 **GitHub:** https://github.com/mtproto-suite/mtproto-suite/security/advisories/new (приватное раскрытие)
 
