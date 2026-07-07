@@ -35,7 +35,7 @@ We take security seriously. If you discover a vulnerability:
 
 ### How to Report
 
-**Email:** security@mtproto-suite.example.com (placeholder — set up real email)
+**Email:** ns8sup@gmail.com
 
 **GitHub:** https://github.com/mtproto-suite/mtproto-suite/security/advisories/new (private disclosure)
 
