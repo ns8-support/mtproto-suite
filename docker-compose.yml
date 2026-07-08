@@ -1,0 +1,83 @@
+name: mtproto-panel
+
+# Этот файл описывает панель управления (frontend + backend + PostgreSQL).
+# Используется как базовый, расширяется через docker-compose.ssl.yml для HTTPS.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mtproto-panel-db
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      POSTGRES_DB: ${DB_NAME:-mtproto_panel}
+      POSTGRES_USER: ${DB_USER:-mtproto}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-mtproto} -d ${DB_NAME:-mtproto_panel}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # Не выставляем порт — доступ только из backend
+
+  backend:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-ns8-support/mtproto-suite}/panel-backend:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: panel-backend/Dockerfile
+      provenance: false
+    container_name: mtproto-panel-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # docker.sock нужен для self-update (panel может обновить себя)
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Монтирование проекта для update.sh
+      - .:/app/project:ro
+    environment:
+      PORT: "3000"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: ${DB_NAME:-mtproto_panel}
+      DB_USER: ${DB_USER:-mtproto}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      NODE_REQUEST_TIMEOUT_MS: ${NODE_REQUEST_TIMEOUT_MS:-30000}
+      NODE_ENV: production
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-ns8-support/mtproto-suite}/panel-frontend:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: panel-frontend/Dockerfile
+      provenance: false
+    container_name: mtproto-panel-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${PORT:-80}:80"
+      # 443 выставляется только в docker-compose.ssl.yml
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  pgdata:

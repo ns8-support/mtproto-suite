@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Shared package compilation artifacts (rebuilt by tsc on build)
+shared/types/*.js
+shared/types/*.js.map
+shared/types/*.d.ts
+shared/utils/*.js
+shared/utils/*.js.map
+shared/utils/*.d.ts
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Docker
+.dockerignore
+
+# Backend service data
+service-node/data/
+service-node/.env
+service-node/.env.bak

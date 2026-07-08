@@ -1,0 +1,20 @@
+# Дополнение к docker-compose.yml для HTTPS.
+# Использование: COMPOSE_FILE="docker-compose.yml:docker-compose.ssl.yml" docker compose up -d
+#
+# ВАЖНО: не указывайте `name:` здесь — при merge с docker-compose.yml имя проекта
+# должно остаться тем же (из базового файла), иначе volume pgdata получит другое имя.
+
+services:
+  frontend:
+    volumes:
+      # SSL-сертификаты из корневого каталога установки
+      - ./ssl/cert.pem:/etc/nginx/ssl/cert.pem:ro
+      - ./ssl/key.pem:/etc/nginx/ssl/key.pem:ro
+      # Подменяем дефолтный конфиг на SSL-версию
+      - ./panel-frontend/nginx-ssl.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      # При merge с docker-compose.yml порты ДОБАВЛЯЮТСЯ (append).
+      # Чтобы избежать конфликта с "${PORT:-80}:80" из базового файла,
+      # здесь маппим 443:443. Порт 80 (HTTP) из базового compose тоже будет маппиться,
+      # но nginx-ssl.conf делает redirect 80 → 443, так что оба порта нужны.
+      - "443:443"
