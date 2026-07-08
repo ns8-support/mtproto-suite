@@ -54,11 +54,11 @@ export function MetricsChart({
     const padding = { top: 20, right: 20, bottom: 30, left: 50 };
 
     // Очищаем.
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#0e0e14';
     ctx.fillRect(0, 0, width, heightPx);
 
     // Рисуем сетку.
-    ctx.strokeStyle = '#e0e0e0';
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
     ctx.lineWidth = 1;
     ctx.setLineDash([2, 2]);
     for (let i = 0; i <= 4; i++) {
@@ -70,7 +70,7 @@ export function MetricsChart({
 
       // Подписи Y.
       const value = 100 - i * 25;
-      ctx.fillStyle = '#666';
+      ctx.fillStyle = '#9b9bad';
       ctx.font = '11px sans-serif';
       ctx.textAlign = 'right';
       ctx.fillText(`${value}%`, padding.left - 5, y + 4);
@@ -78,7 +78,7 @@ export function MetricsChart({
     ctx.setLineDash([]);
 
     // Оси.
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
     ctx.beginPath();
     ctx.moveTo(padding.left, padding.top);
     ctx.lineTo(padding.left, heightPx - padding.bottom);
@@ -86,9 +86,9 @@ export function MetricsChart({
     ctx.stroke();
 
     const series: SeriesConfig[] = [];
-    if (showCpu) series.push({ label: 'CPU', color: '#007bff', extract: (p) => p.cpuPercent });
-    if (showMemory) series.push({ label: 'RAM', color: '#28a745', extract: (p) => p.memoryPercent });
-    if (showDisk) series.push({ label: 'Disk', color: '#fd7e14', extract: (p) => p.diskPercent });
+    if (showCpu) series.push({ label: 'CPU', color: '#5b8def', extract: (p) => p.cpuPercent });
+    if (showMemory) series.push({ label: 'RAM', color: '#2dd4a7', extract: (p) => p.memoryPercent });
+    if (showDisk) series.push({ label: 'Disk', color: '#ffb547', extract: (p) => p.diskPercent });
 
     if (series.length === 0) return;
 
@@ -132,7 +132,7 @@ export function MetricsChart({
 
     // Подписи X (первая и последняя точки).
     if (history.length > 0) {
-      ctx.fillStyle = '#666';
+      ctx.fillStyle = '#9b9bad';
       ctx.font = '11px sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText(
@@ -156,7 +156,7 @@ export function MetricsChart({
     for (const s of series) {
       ctx.fillStyle = s.color;
       ctx.fillRect(legendX, legendY - 6, 12, 4);
-      ctx.fillStyle = '#333';
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
       ctx.fillText(s.label, legendX + 16, legendY);
       legendX += 60;
     }

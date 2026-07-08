@@ -27,36 +27,60 @@ export function LoginPage() {
 
   return (
     <div className="login-page">
-      <form onSubmit={handleSubmit} className="login-form">
-        <h1>MTProto Panel</h1>
+      <div className="login-card">
+        <div className="login-brand">
+          <span className="login-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M12 2L3 7v10l9 5 9-5V7l-9-5z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinejoin="round"
+              />
+              <path d="M12 7v10M7.5 9.5l9 5M16.5 9.5l-9 5" stroke="currentColor" strokeWidth="1.4" opacity="0.6" />
+            </svg>
+          </span>
+          <div>
+            <h1>MTProto Suite</h1>
+            <p>Панель управления прокси-серверами</p>
+          </div>
+        </div>
 
-        <label>
-          <span>Логин</span>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoFocus
-            required
-          />
-        </label>
+        <form onSubmit={handleSubmit} className="login-form">
+          <label>
+            <span>Логин</span>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoFocus
+              required
+              placeholder="admin"
+            />
+          </label>
 
-        <label>
-          <span>Пароль</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
+          <label>
+            <span>Пароль</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+            />
+          </label>
 
-        {error && <div className="error-banner">{error}</div>}
+          {error && <div className="error-banner">{error}</div>}
 
-        <button type="submit" disabled={loading} className="btn-primary">
-          {loading ? 'Вход...' : 'Войти'}
-        </button>
-      </form>
+          <button type="submit" disabled={loading} className="btn-primary login-btn">
+            {loading ? 'Вход...' : 'Войти'}
+          </button>
+        </form>
+
+        <div className="login-footer">
+          Защищённое соединение · доступ только для администраторов
+        </div>
+      </div>
     </div>
   );
 }

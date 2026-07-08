@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { execFile } from 'child_process';
 import { readFileSync } from 'fs';
@@ -42,31 +41,71 @@ app.use((_req, res, next) => {
 
 // ============ CORS ============
 
-// CORS whitelist — только доверенные origins могут делать запросы.
-// По умолчанию разрешает localhost (для разработки) и Panel frontend URL.
-// В production задайте PANEL_FRONTEND_URL=https://panel.example.com
+// CORS allowlist — только доверенные origins могут делать запросы.
+// По умолчанию разрешает localhost (для разработки) и Panel frontend URL
+// (задаётся через PANEL_FRONTEND_URL=https://panel.example.com).
+//
+// Дополнительно всегда разрешаем same-host origin: в штатном деплое фронтенд и
+// API находятся на одном хосте за nginx (фронт отдаётся nginx, /api проксируется
+// на backend). Браузеры (Chrome) всё равно шлют заголовок Origin даже для
+// same-origin POST-запросов, и без этого правила такие запросы отклонялись бы,
+// ломая, например, логин. Внешний Origin (другой хост) по-прежнему блокируется.
 const ALLOWED_ORIGINS = (process.env.PANEL_FRONTEND_URL || 'http://localhost:5173,http://localhost:80')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Разрешаем запросы без origin (curl, server-to-server)
-      if (!origin) return callback(null, true);
-      if (ALLOWED_ORIGINS.includes(origin) || ALLOWED_ORIGINS.includes('*')) {
-        return callback(null, true);
-      }
-      logger.warn('cors', `Blocked CORS request from origin: ${origin}`);
-      return callback(new Error('CORS: origin not allowed'));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    maxAge: 86400, // 24h
-  })
-);
+function isAllowedOrigin(
+  origin: string,
+  host: string | undefined,
+  forwardedHost?: string | string[] | undefined
+): boolean {
+  if (ALLOWED_ORIGINS.includes(origin) || ALLOWED_ORIGINS.includes('*')) return true;
+  // Заголовки, по которым можно определить «свой» хост: оригинальный Host
+  // (nginx проксирует его как $host) либо X-Forwarded-Host (если конфиг nginx
+  // переопределяет Host на backend:PORT).
+  const forwarded =
+    typeof forwardedHost === 'string'
+      ? forwardedHost.split(',')[0].trim()
+      : Array.isArray(forwardedHost)
+        ? forwardedHost[0]
+        : undefined;
+  const candidates = [host, forwarded].filter((h): h is string => Boolean(h));
+  for (const h of candidates) {
+    try {
+      const url = new URL(origin);
+      // Разрешаем запросы с того же хоста (с портом или без), что и backend.
+      if (url.host === h) return true;
+      if (url.hostname === h.split(':')[0]) return true;
+    } catch {
+      // ignore malformed origin
+    }
+  }
+  return false;
+}
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const host = req.headers.host;
+
+  // Запросы без Origin (curl, server-to-server, часть same-origin запросов) — пропускаем.
+  if (!origin) return next();
+
+  if (isAllowedOrigin(origin, host, req.headers['x-forwarded-host'])) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Max-Age', '86400');
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(204);
+    }
+    return next();
+  }
+
+  logger.warn('cors', `Blocked CORS request from origin: ${origin}`);
+  return res.status(403).json({ error: 'CORS: origin not allowed' });
+});
 
 app.use(express.json({ limit: '1mb' }));
 

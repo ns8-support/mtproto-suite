@@ -122,10 +122,7 @@ ${denyEntries ? denyEntries + '\n' : ''}    }`;
     })
     .join('\n');
 
-  const fallbackHtml =
-    '<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><title>Welcome</title></head>' +
-    '<body style="font-family:sans-serif;text-align:center;padding:60px">' +
-    '<h1>Welcome</h1><p>This server is operating normally.</p></body></html>';
+  const fallbackHtml = `<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>MTProto Suite</title><style>:root{color-scheme:dark}*{box-sizing:border-box}html,body{height:100%}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,-apple-system,sans-serif;color:#e8e8f0;background:radial-gradient(1100px 560px at 50% -12%,rgba(124,92,255,0.18),transparent 60%),radial-gradient(820px 520px at 100% 100%,rgba(91,141,239,0.10),transparent 60%),#0a0a0f}.card{text-align:center;padding:44px 48px;border-radius:20px;background:rgba(20,20,28,0.72);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,0.12);box-shadow:0 12px 34px rgba(0,0,0,0.45);max-width:440px}.logo{width:52px;height:52px;margin:0 auto 18px;border-radius:15px;background:linear-gradient(135deg,#7c5cff 0%,#5b8def 100%);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 16px rgba(124,92,255,0.45)}h1{margin:0 0 8px;font-size:22px;letter-spacing:-0.01em}p{margin:0;color:#9b9bad;font-size:14px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2dd4a7;margin-right:6px;vertical-align:middle;box-shadow:0 0 8px rgba(45,212,167,0.7)}</style></head><body><div class="card"><div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 7v10M7.5 9.5l9 5M16.5 9.5l-9 5" stroke="currentColor" stroke-width="1.4" opacity="0.6"/></svg></div><h1>MTProto Suite</h1><p><span class="dot"></span>Сервер работает в штатном режиме.</p></div></body></html>`;
 
   // resolver нужен только если nginx резолвит имена через Docker DNS (bridge mode).
   // При host network nginx уже знает IP — резолвер не нужен.

@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { isAuthenticated } from './api';
+import { Layout } from './components/Layout/Layout';
 
 /**
  * Корневой компонент приложения с роутингом.
@@ -27,40 +28,17 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
 
       <Route
-        path="/nodes"
         element={
           <PrivateRoute>
-            <NodesPage />
+            <Layout />
           </PrivateRoute>
         }
-      />
-
-      <Route
-        path="/nodes/:id"
-        element={
-          <PrivateRoute>
-            <NodeDetailPage />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/ssl"
-        element={
-          <PrivateRoute>
-            <SSLPage />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/settings"
-        element={
-          <PrivateRoute>
-            <div>Settings (TODO)</div>
-          </PrivateRoute>
-        }
-      />
+      >
+        <Route path="/nodes" element={<NodesPage />} />
+        <Route path="/nodes/:id" element={<NodeDetailPage />} />
+        <Route path="/ssl" element={<SSLPage />} />
+        <Route path="/settings" element={<div>Settings (TODO)</div>} />
+      </Route>
 
       <Route path="*" element={<Navigate to="/nodes" />} />
     </Routes>
