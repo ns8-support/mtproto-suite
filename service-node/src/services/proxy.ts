@@ -77,7 +77,12 @@ export async function createProxy(req: ProxyCreateRequest): Promise<ProxyConfig>
     socks5Host = vpnContainerName;
   }
 
+  // ВАЖНО: вычисленные поля (id/port/secret/domain/containerName/...) формируются выше
+  // и должны иметь приоритет над значениями из req. Поэтому спред `...req` идёт ПЕРВЫМ —
+  // иначе, если клиент пришлёт domain/port/secret равными undefined/null, они
+  // перезапишут уже вычисленные значения и прокси сохранится с пустыми полями.
   const proxy: ProxyConfig = {
+    ...req,
     id,
     name: req.name || `Proxy ${id}`,
     note: req.note || '',
@@ -91,7 +96,6 @@ export async function createProxy(req: ProxyCreateRequest): Promise<ProxyConfig>
     trafficDown: 0,
     connectedIps: [],
     vpnContainerName,
-    ...req,
     natIp: req.natIp || config.natIp || undefined,
     tunnelInterface: req.tunnelInterface || config.tunnelInterface || undefined,
   };
@@ -223,7 +227,9 @@ export async function updateProxy(
       containerName: proxy.containerName,
       secret: proxy.secret,
       domain: updates.domain || proxy.domain,
-      listenPort: proxy.listenPort || config.nginxPort,
+      // Используем обновлённый listenPort, иначе смена порта при restart не применится.
+      listenPort:
+        updates.listenPort !== undefined ? updates.listenPort : (proxy.listenPort || config.nginxPort),
       tag: updates.tag !== undefined ? updates.tag : proxy.tag,
       socks5Host: newSocks5Host,
       maskHost: updates.maskHost !== undefined ? updates.maskHost : proxy.maskHost,
@@ -259,7 +265,9 @@ export async function restartProxy(id: string): Promise<ProxyConfig | undefined>
     tag: proxy.tag,
     socks5Host: proxy.vpnContainerName,
     maskHost: proxy.maskHost,
-    natIp: config.natIp || undefined,
+    // Сохраняем per-proxy NAT_IP (hybrid/VPN-режим). Без этого рестарт терял
+    // индивидуальный natIp и подменял его глобальным config.natIp.
+    natIp: proxy.natIp || config.natIp || undefined,
     options: { ...DEFAULT_TELEMT_OPTIONS, ...proxy } as unknown as TelemtOptions,
   });
 

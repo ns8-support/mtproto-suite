@@ -328,7 +328,7 @@ fi
 cd ${installDir}
 mkdir -p service-node/data
 cat > service-node/.env << 'EOF'
-PORT=8443
+PORT=${nodePort}
 NGINX_PORT=${nginxPort}
 AUTH_TOKEN=${authToken}
 NAT_IP=${params.natIp || ''}

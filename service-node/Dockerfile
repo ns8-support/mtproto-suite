@@ -40,4 +40,6 @@ EXPOSE 8443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://localhost:8443/api/health || exit 1
 
-CMD ["node", "dist/index.js"]
+# Точка входа после сборки: service-node/src/index.js
+# (tsc с rootDir=repo кладёт собранный код в dist/service-node/src/)
+CMD ["node", "dist/service-node/src/index.js"]

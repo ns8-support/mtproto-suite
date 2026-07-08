@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { pool } from '../db';
 import { AuthRequest, authMiddleware } from '../middleware/auth';
 import { proxyToNode } from '../utils/node-proxy';
+import { sanitizeErrorMessage } from '../utils/error-sanitizer';
 
 const router = Router();
 router.use(authMiddleware);
@@ -23,7 +24,7 @@ router.get('/:nodeId/proxies', async (req: AuthRequest, res: Response) => {
     const result = await proxyToNode(node, 'GET', '');
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -38,7 +39,7 @@ router.post('/:nodeId/proxies', async (req: AuthRequest, res: Response) => {
     const result = await proxyToNode(node, 'POST', '', req.body);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -53,7 +54,7 @@ router.get('/:nodeId/proxies/:proxyId', async (req: AuthRequest, res: Response) 
     const result = await proxyToNode(node, 'GET', `/${req.params.proxyId}`);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -68,7 +69,7 @@ router.put('/:nodeId/proxies/:proxyId', async (req: AuthRequest, res: Response) 
     const result = await proxyToNode(node, 'PUT', `/${req.params.proxyId}`, req.body);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -83,7 +84,7 @@ router.delete('/:nodeId/proxies/:proxyId', async (req: AuthRequest, res: Respons
     const result = await proxyToNode(node, 'DELETE', `/${req.params.proxyId}`);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -98,7 +99,7 @@ router.get('/:nodeId/proxies/:proxyId/stats', async (req: AuthRequest, res: Resp
     const result = await proxyToNode(node, 'GET', `/${req.params.proxyId}/stats`);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -116,7 +117,7 @@ router.get('/:nodeId/proxies/:proxyId/link', async (req: AuthRequest, res: Respo
     const linkResult = await proxyToNode(node, 'GET', `/${req.params.proxyId}/link?server_ip=${encodeURIComponent(serverHost)}`);
     res.status(linkResult.status).json(linkResult.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -131,7 +132,7 @@ router.post('/:nodeId/proxies/:proxyId/pause', async (req: AuthRequest, res: Res
     const result = await proxyToNode(node, 'POST', `/${req.params.proxyId}/pause`);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -145,7 +146,7 @@ router.post('/:nodeId/proxies/:proxyId/unpause', async (req: AuthRequest, res: R
     const result = await proxyToNode(node, 'POST', `/${req.params.proxyId}/unpause`);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -160,7 +161,7 @@ router.get('/:nodeId/proxies/:proxyId/stats-history', async (req: AuthRequest, r
     const result = await proxyToNode(node, 'GET', `/${req.params.proxyId}/stats-history`);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -174,7 +175,7 @@ router.get('/:nodeId/proxies/:proxyId/ip-history', async (req: AuthRequest, res:
     const result = await proxyToNode(node, 'GET', `/${req.params.proxyId}/ip-history`);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 
@@ -188,7 +189,7 @@ router.delete('/:nodeId/proxies/:proxyId/clear-history', async (req: AuthRequest
     const result = await proxyToNode(node, 'DELETE', `/${req.params.proxyId}/clear-history`);
     res.status(result.status).json(result.data);
   } catch (error: any) {
-    res.status(502).json({ error: `Failed to connect to node: ${error.message}` });
+    res.status(502).json({ error: sanitizeErrorMessage(error) });
   }
 });
 

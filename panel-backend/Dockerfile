@@ -17,8 +17,22 @@ RUN npm install --no-audit --no-fund @mtproto-suite/shared@file:../shared
 # Устанавливаем зависимости
 RUN npm install --no-audit --no-fund
 
-# Компилируем TypeScript и проверяем, что dist создана
-RUN npm run build && ls -la dist/ || (echo "Build failed!" && exit 1)
+# Показываем структуру перед сборкой
+RUN echo "=== Перед сборкой ===" && ls -la
+
+# Компилируем TypeScript с подробным выводом
+RUN echo "=== TypeScript compilation ===" && npm run build 2>&1 && echo "=== Build completed ===" || (echo "TypeScript compilation failed!" && exit 1)
+
+# Подробно проверяем структуру dist/
+RUN echo "=== Структура dist/ ===" && find dist/ -type f 2>&1 | head -20 || echo "dist/ не найдена"
+
+# Проверяем конкретные файлы
+RUN echo "=== Проверка файлов ===" && ls -la dist/ && ls -la dist/index.js 2>&1 || echo "dist/index.js не найден"
+
+# Проверяем структуру dist/shared (скомпилированный shared)
+RUN echo "=== Структура dist/shared ===" && find dist/shared -type f 2>&1 | head -20 || echo "dist/shared не найдена"
+RUN echo "=== Проверка dist/shared/utils ===" && ls -la dist/shared/utils/ 2>&1 || echo "dist/shared/utils не найдена"
+RUN echo "=== Проверка dist/shared/utils/logger.js ===" && test -f dist/shared/utils/logger.js && echo "✅ logger.js найден в dist" || echo "❌ logger.js НЕ найден в dist"
 
 # Удаляем devDependencies после успешной сборки
 RUN npm prune --production
@@ -29,23 +43,23 @@ RUN apk add --no-cache bash git docker-cli
 
 WORKDIR /app
 
-COPY --from=builder /app/panel-backend/dist ./dist
-COPY --from=builder /app/panel-backend/package.json ./
-COPY --from=builder /app/panel-backend/node_modules ./node_modules
-COPY --from=builder /app/shared/package.json /app/shared/
-COPY --from=builder /app/shared/dist /app/shared/dist
-COPY --from=builder /app/shared/types /app/shared/types
-COPY --from=builder /app/shared/utils /app/shared/utils
+# Копируем структуру.
+# Скомпилированный backend лежит в dist/panel-backend, shared — в dist/shared.
+# Относительные require в собранных файлах указывают на ../../shared/...,
+# поэтому раскладываем их так, чтобы из /app/panel-backend/src требовался
+# /app/shared (а не /shared — из-за этого контейнер падал с MODULE_NOT_FOUND).
+COPY --from=builder /app/panel-backend/dist/panel-backend ./panel-backend
+COPY --from=builder /app/panel-backend/package.json ./panel-backend/
+COPY --from=builder /app/panel-backend/node_modules ./panel-backend/node_modules
+
+COPY --from=builder /app/panel-backend/dist/shared ./shared
 
 COPY panel-backend/update.sh /app/project/update.sh
 RUN chmod +x /app/project/update.sh
-
-# Проверяем, что dist/index.js существует
-RUN ls -la dist/ && test -f dist/index.js || (echo "dist/index.js not found!" && exit 1)
 
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://localhost:3000/api/health || exit 1
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "panel-backend/src/index.js"]

@@ -43,7 +43,7 @@ services:
       # Монтирование проекта для update.sh
       - .:/app/project:ro
     environment:
-      PORT: "3000"
+      PORT: "${BACKEND_PORT:-3000}"
       DB_HOST: db
       DB_PORT: "5432"
       DB_NAME: ${DB_NAME:-mtproto_panel}
@@ -70,6 +70,8 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    environment:
+      BACKEND_PORT: "${BACKEND_PORT:-3000}"
     ports:
       - "${PORT:-80}:80"
       # 443 выставляется только в docker-compose.ssl.yml
