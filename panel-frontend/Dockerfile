@@ -10,8 +10,18 @@ RUN npm install --no-audit --no-fund && npm run build
 WORKDIR /app
 COPY panel-frontend ./panel-frontend
 WORKDIR /app/panel-frontend
-# Исправляем путь к shared для Docker контекста
-RUN npm install --no-audit --no-fund @mtproto-suite/shared@file:../shared && npm install --no-audit --no-fund && npm run build
+
+# Отладка: показываем структуру
+RUN echo "=== Структура /app ===" && ls -la /app/ && echo "=== Структура /app/shared ===" && ls -la /app/shared/ 2>/dev/null || echo "shared не найден"
+
+# Устанавливаем shared пакет
+RUN npm install --no-audit --no-fund @mtproto-suite/shared@file:../shared
+
+# Отладка: проверяем, что shared установлен
+RUN echo "=== node_modules/@mtproto-suite ===" && ls -la node_modules/@mtproto-suite/ 2>/dev/null || echo "shared не установлен" && echo "=== package.json shared ===" && cat node_modules/@mtproto-suite/shared/package.json 2>/dev/null || echo "package.json не найден"
+
+# Устанавливаем остальные зависимости и собираем
+RUN npm install --no-audit --no-fund && npm run build
 
 # ============ Production stage — nginx для SPA ============
 FROM nginx:alpine
