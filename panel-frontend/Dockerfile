@@ -3,22 +3,18 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Копируем и собираем shared пакет
 COPY shared ./shared
 WORKDIR /app/shared
 RUN npm install --no-audit --no-fund && npm run build
 
+# Копируем frontend и устанавливаем зависимости
 WORKDIR /app
 COPY panel-frontend ./panel-frontend
 WORKDIR /app/panel-frontend
 
-# Отладка: показываем структуру
-RUN echo "=== Структура /app ===" && ls -la /app/ && echo "=== Структура /app/shared ===" && ls -la /app/shared/ 2>/dev/null || echo "shared не найден"
-
-# Устанавливаем shared пакет
+# Устанавливаем shared пакет из локального пути
 RUN npm install --no-audit --no-fund @mtproto-suite/shared@file:../shared
-
-# Отладка: проверяем, что shared установлен
-RUN echo "=== node_modules/@mtproto-suite ===" && ls -la node_modules/@mtproto-suite/ 2>/dev/null || echo "shared не установлен" && echo "=== package.json shared ===" && cat node_modules/@mtproto-suite/shared/package.json 2>/dev/null || echo "package.json не найден"
 
 # Устанавливаем остальные зависимости и собираем
 RUN npm install --no-audit --no-fund && npm run build
