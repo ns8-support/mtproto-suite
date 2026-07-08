@@ -10,8 +10,18 @@ RUN npm install --no-audit --no-fund && npm run build
 WORKDIR /app
 COPY panel-backend ./panel-backend
 WORKDIR /app/panel-backend
-# Явная установка shared для Docker контекста (путь ../shared)
-RUN npm install --no-audit --no-fund @mtproto-suite/shared@file:../shared && npm install --no-audit --no-fund && npm run build && npm prune --production
+
+# Устанавливаем shared пакет
+RUN npm install --no-audit --no-fund @mtproto-suite/shared@file:../shared
+
+# Устанавливаем зависимости
+RUN npm install --no-audit --no-fund
+
+# Компилируем TypeScript и проверяем, что dist создана
+RUN npm run build && ls -la dist/ || (echo "Build failed!" && exit 1)
+
+# Удаляем devDependencies после успешной сборки
+RUN npm prune --production
 
 FROM node:20-alpine
 
@@ -29,6 +39,9 @@ COPY --from=builder /app/shared/utils /app/shared/utils
 
 COPY panel-backend/update.sh /app/project/update.sh
 RUN chmod +x /app/project/update.sh
+
+# Проверяем, что dist/index.js существует
+RUN ls -la dist/ && test -f dist/index.js || (echo "dist/index.js not found!" && exit 1)
 
 EXPOSE 3000
 
