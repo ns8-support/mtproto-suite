@@ -135,7 +135,7 @@ MTProto Suite — Установщик
 ssh root@panel.example.com
 
 # Запустите установщик
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=panel
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=panel
 ```
 
 **Интерактивные запросы:**
@@ -181,7 +181,7 @@ URL:        https://panel.example.com
 ssh root@proxy1.example.com
 
 # Запустите установщик
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=node
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=node
 ```
 
 **Интерактивные запросы:**
@@ -254,7 +254,7 @@ API:        http://proxy1.example.com:8443/api/health
 ```bash
 ssh root@localhost
 
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=both -y
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=both -y
 ```
 
 Устанавливает:
@@ -287,7 +287,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/m
 ### Установка
 
 ```bash
-git clone https://github.com/mtproto-suite/mtproto-suite.git
+git clone https://github.com/ns8-support/mtproto-suite.git
 cd mtproto-suite
 
 # Установить зависимости для всех пакетов
@@ -426,7 +426,7 @@ netbird status
 Или через CLI:
 ```bash
 cd /opt/mtproto-suite
-git pull origin master
+git pull origin main
 docker compose pull 2>/dev/null || docker compose build
 docker compose up -d
 ```
@@ -441,7 +441,7 @@ docker compose up -d
 Или через CLI на ноде:
 ```bash
 cd /opt/mtproto-suite
-git pull origin master
+git pull origin main
 docker compose pull 2>/dev/null || docker compose build
 docker compose up -d
 ```
@@ -547,7 +547,7 @@ tar czf node-config.tar.gz /opt/mtproto-suite/service-node/.env
 
 1. Проверьте логи: `docker compose logs`
 2. См. [TROUBLESHOOTING.md](TROUBLESHOOTING.ru.md)
-3. Откройте issue: https://github.com/mtproto-suite/mtproto-suite/issues
+3. Откройте issue: https://github.com/ns8-support/mtproto-suite/issues
 4. Включите в отчёт:
    - Версия ОС (`cat /etc/os-release`)
    - Версия Docker (`docker version`)

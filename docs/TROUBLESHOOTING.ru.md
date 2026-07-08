@@ -719,7 +719,7 @@ docker compose up -d backend  # Обновит пароль при старте
 ### Перед открытием Issue
 
 1. **Проверьте логи** — `docker compose logs -f`
-2. **Поищите issues** — https://github.com/mtproto-suite/mtproto-suite/issues
+2. **Поищите issues** — https://github.com/ns8-support/mtproto-suite/issues
 3. **Попробуйте docs** — [INSTALLATION.md](INSTALLATION.ru.md), [CONFIGURATION.md](CONFIGURATION.ru.md)
 4. **Воспроизведите** — можете воспроизвести проблему стабильно?
 

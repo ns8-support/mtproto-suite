@@ -24,6 +24,7 @@ services:
       - mtproto-net
 
   backend:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-ns8-support/mtproto-suite}/panel-backend:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: panel-backend/Dockerfile
@@ -52,6 +53,7 @@ services:
       - mtproto-net
 
   frontend:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-ns8-support/mtproto-suite}/panel-frontend:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: panel-frontend/Dockerfile
@@ -67,6 +69,7 @@ services:
 
   # ============ Сервис-нода ============
   service-node:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-ns8-support/mtproto-suite}/service-node:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: service-node/Dockerfile

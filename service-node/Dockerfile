@@ -11,8 +11,8 @@ RUN npm install --no-audit --no-fund && npm run build
 WORKDIR /app
 COPY service-node ./service-node
 WORKDIR /app/service-node
-# Локальная зависимость через file: ссылается на собранный shared
-RUN npm link ../shared && npm install --no-audit --no-fund && npm run build && npm prune --production
+# Явная установка shared для Docker контекста (путь ../shared)
+RUN npm install --no-audit --no-fund @mtproto-suite/shared@file:../shared && npm install --no-audit --no-fund && npm run build && npm prune --production
 
 # ============ Production stage ============
 FROM node:20-alpine
@@ -25,7 +25,10 @@ WORKDIR /app
 COPY --from=builder /app/service-node/dist ./dist
 COPY --from=builder /app/service-node/package.json ./
 COPY --from=builder /app/service-node/node_modules ./node_modules
-COPY --from=builder /app/shared/package.json /app/shared/dist /app/shared/
+COPY --from=builder /app/shared/package.json /app/shared/
+COPY --from=builder /app/shared/dist /app/shared/dist
+COPY --from=builder /app/shared/types /app/shared/types
+COPY --from=builder /app/shared/utils /app/shared/utils
 
 # update.sh нужен для self-update через UI панели
 COPY service-node/update.sh /app/project/update.sh

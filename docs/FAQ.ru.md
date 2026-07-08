@@ -336,7 +336,7 @@ docker ps -a --filter "name=mtproto-proxy"
 
 ### Куда сообщать о багах?
 
-https://github.com/mtproto-suite/mtproto-suite/issues
+https://github.com/ns8-support/mtproto-suite/issues
 
 Включите:
 - Версия ОС
@@ -350,8 +350,8 @@ https://github.com/mtproto-suite/mtproto-suite/issues
 ## 🤔 Остались вопросы?
 
 - 📖 Прочитайте [docs](../README.ru.md)
-- 🐛 Поищите [GitHub issues](https://github.com/mtproto-suite/mtproto-suite/issues)
-- 💬 Откройте [GitHub discussion](https://github.com/mtproto-suite/mtproto-suite/discussions)
+- 🐛 Поищите [GitHub issues](https://github.com/ns8-support/mtproto-suite/issues)
+- 💬 Откройте [GitHub discussion](https://github.com/ns8-support/mtproto-suite/discussions)
 - 📧 Email (TBD)
 
 ---

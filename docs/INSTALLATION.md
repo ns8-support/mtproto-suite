@@ -133,7 +133,7 @@ Choose a server with a **stable public IP** and good connectivity to all your pr
 ```bash
 ssh root@panel.example.com
 
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=panel
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=panel
 ```
 
 **Interactive prompts:**
@@ -179,7 +179,7 @@ On each proxy server:
 ```bash
 ssh root@proxy1.example.com
 
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=node
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=node
 ```
 
 **Interactive prompts:**
@@ -252,7 +252,7 @@ For testing, demos, or home use — everything runs on one machine.
 ```bash
 ssh root@localhost
 
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=both -y
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=both -y
 ```
 
 This installs:
@@ -285,7 +285,7 @@ For contributing to MTProto Suite or running custom modifications.
 ### Setup
 
 ```bash
-git clone https://github.com/mtproto-suite/mtproto-suite.git
+git clone https://github.com/ns8-support/mtproto-suite.git
 cd mtproto-suite
 
 # Install dependencies for all packages
@@ -430,7 +430,7 @@ netbird status
 Or via CLI:
 ```bash
 cd /opt/mtproto-suite
-git pull origin master
+git pull origin main
 docker compose pull 2>/dev/null || docker compose build
 docker compose up -d
 ```
@@ -445,7 +445,7 @@ docker compose up -d
 Or via CLI on node:
 ```bash
 cd /opt/mtproto-suite
-git pull origin master
+git pull origin main
 docker compose pull 2>/dev/null || docker compose build
 docker compose up -d
 ```
@@ -551,7 +551,7 @@ If installation fails:
 
 1. Check logs: `docker compose logs`
 2. See [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
-3. Open an issue: https://github.com/mtproto-suite/mtproto-suite/issues
+3. Open an issue: https://github.com/ns8-support/mtproto-suite/issues
 4. Include in your report:
    - OS version (`cat /etc/os-release`)
    - Docker version (`docker version`)

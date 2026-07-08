@@ -60,7 +60,7 @@ docker compose logs --tail=100 service-node
 ## Checklist
 
 - [ ] I've checked [TROUBLESHOOTING.md](../../docs/TROUBLESHOOTING.md)
-- [ ] I've searched [existing issues](https://github.com/mtproto-suite/mtproto-suite/issues)
+- [ ] I've searched [existing issues](https://github.com/ns8-support/mtproto-suite/issues)
 - [ ] I've tried the latest version
 - [ ] Logs are included
 - [ ] Reproduction steps are clear

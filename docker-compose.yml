@@ -27,11 +27,11 @@ services:
     # Не выставляем порт — доступ только из backend
 
   backend:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-ns8-support/mtproto-suite}/panel-backend:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: panel-backend/Dockerfile
       provenance: false
-    image: ghcr.io/mtproto-suite/panel-backend:latest
     container_name: mtproto-panel-backend
     restart: unless-stopped
     depends_on:
@@ -61,11 +61,11 @@ services:
         max-file: "3"
 
   frontend:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-ns8-support/mtproto-suite}/panel-frontend:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: panel-frontend/Dockerfile
       provenance: false
-    image: ghcr.io/mtproto-suite/panel-frontend:latest
     container_name: mtproto-panel-frontend
     restart: unless-stopped
     depends_on:

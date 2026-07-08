@@ -91,7 +91,7 @@ git clone https://github.com/YOUR_USERNAME/mtproto-suite.git
 cd mtproto-suite
 
 # Add upstream
-git remote add upstream https://github.com/mtproto-suite/mtproto-suite.git
+git remote add upstream https://github.com/ns8-support/mtproto-suite.git
 
 # Install all packages
 cd shared && npm install && npm run build && cd ..
@@ -436,7 +436,7 @@ docs: add TROUBLESHOOTING.md
 1. **Sync with upstream**
    ```bash
    git fetch upstream
-   git rebase upstream/master
+   git rebase upstream/main
    ```
 
 2. **Run tests locally**
@@ -544,8 +544,8 @@ We follow **Semantic Versioning**:
 
 ## 📞 Communication
 
-- **GitHub Issues**: https://github.com/mtproto-suite/mtproto-suite/issues
-- **GitHub Discussions**: https://github.com/mtproto-suite/mtproto-suite/discussions
+- **GitHub Issues**: https://github.com/ns8-support/mtproto-suite/issues
+- **GitHub Discussions**: https://github.com/ns8-support/mtproto-suite/discussions
 - **Email**: dev@mtproto-suite.example.com (placeholder)
 - **Telegram**: TBD
 

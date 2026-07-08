@@ -148,13 +148,12 @@ mtproto-suite/
 ├── docker-compose.ssl.yml     # Overlay для HTTPS
 ├── docker-compose.both.yml    # Панель + нода на одной машине
 ├── install.sh                 # 🔧 Единый интерактивный установщик
-├── install-node.sh            # Алиас для install.sh --mode=node
 ├── uninstall.sh
 ├── CHANGELOG.md               # История версий
 ├── LICENSE                    # MIT License
 ├── CONTRIBUTING.md            # Гайд для контрибьюторов
 ├── README.md                  # Этот файл
-└── README.ru.md               # Английская версия
+└── README.ru.md               # Русская версия
 ```
 
 ---
@@ -170,7 +169,7 @@ mtproto-suite/
 ssh root@panel.example.com
 
 # Запустите установщик
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=panel
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=panel
 ```
 
 Установщик:
@@ -187,7 +186,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/m
 ssh root@proxy1.example.com
 
 # Запустите установщик
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=node
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=node
 ```
 
 **Или используйте функцию "🛠 Установить удалённо" в панели** — вставьте SSH credentials и панель сама установит service-node.
@@ -204,7 +203,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/m
 Для тестирования или домашнего использования, установите всё на одном сервере:
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=both -y
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=both -y
 ```
 
 Запускает:
@@ -216,7 +215,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/m
 ### Вариант 3: Ручная сборка (для разработчиков)
 
 ```bash
-git clone https://github.com/mtproto-suite/mtproto-suite.git
+git clone https://github.com/ns8-support/mtproto-suite.git
 cd mtproto-suite
 
 # Собрать все 4 пакета

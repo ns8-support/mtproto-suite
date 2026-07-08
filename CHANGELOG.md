@@ -19,7 +19,6 @@
 - Установка всех зависимостей (Docker, Docker Compose, git, curl, openssl)
 - Валидация всех параметров
 - Non-interactive режим с `--yes`
-- Алиас `install-node.sh` → `install.sh --mode=node` (backward-compat)
 
 #### Real-Time Monitoring
 

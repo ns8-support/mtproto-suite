@@ -720,7 +720,7 @@ docker compose up -d backend  # Will update password on startup
 ### Before Opening an Issue
 
 1. **Check logs** — `docker compose logs -f`
-2. **Search issues** — https://github.com/mtproto-suite/mtproto-suite/issues
+2. **Search issues** — https://github.com/ns8-support/mtproto-suite/issues
 3. **Try the docs** — [INSTALLATION.md](INSTALLATION.md), [CONFIGURATION.md](CONFIGURATION.md)
 4. **Reproduce** — can you reproduce the issue consistently?
 
@@ -754,8 +754,8 @@ docker compose logs --tail=100 service-node
 
 ### Community Resources
 
-- GitHub Issues: https://github.com/mtproto-suite/mtproto-suite/issues
-- GitHub Discussions: https://github.com/mtproto-suite/mtproto-suite/discussions
+- GitHub Issues: https://github.com/ns8-support/mtproto-suite/issues
+- GitHub Discussions: https://github.com/ns8-support/mtproto-suite/discussions
 - Telegram (if exists): TBD
 
 ### Emergency Recovery

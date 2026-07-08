@@ -2,11 +2,11 @@ name: mtproto-node
 
 services:
   service-node:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-ns8-support/mtproto-suite}/service-node:${IMAGE_TAG:-latest}
     build:
       context: ..
       dockerfile: service-node/Dockerfile
       provenance: false
-    image: ghcr.io/mtproto-suite/service-node:latest
     container_name: mtproto-service-node
     restart: unless-stopped
     logging:
@@ -22,7 +22,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
-      - ..:/app/project
+      - ..:/app/project:ro
     environment:
       PORT: "8443"
       AUTH_TOKEN: ${AUTH_TOKEN}

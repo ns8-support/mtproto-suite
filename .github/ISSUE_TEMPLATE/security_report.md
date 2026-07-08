@@ -10,7 +10,7 @@ assignees: ''
 
 **DO NOT** use this template for non-security issues. Use "Bug Report" instead.
 
-For sensitive security issues, use [GitHub Security Advisories](https://github.com/mtproto-suite/mtproto-suite/security/advisories/new) or email security@mtproto-suite.example.com (private disclosure).
+For sensitive security issues, use [GitHub Security Advisories](https://github.com/ns8-support/mtproto-suite/security/advisories/new) or email ns8sup@gmail.com (private disclosure).
 
 ## Vulnerability Description
 

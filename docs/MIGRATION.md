@@ -152,7 +152,7 @@ cp panel-backend/.env /backup/old-backend.env  # if exists
 
 # Clone new repo alongside
 cd /opt
-git clone https://github.com/mtproto-suite/mtproto-suite.git mtproto-suite-new
+git clone https://github.com/ns8-support/mtproto-suite.git mtproto-suite-new
 
 # Build new images
 cd mtproto-suite-new
@@ -225,7 +225,7 @@ docker compose down
 
 **On panel host:**
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=panel
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=panel
 ```
 
 When prompted, **use the SAME port** as the old installation (or different if you want side-by-side).
@@ -278,7 +278,7 @@ cd /opt/mtproto-node
 cp -r data /backup/data.bak  # Backup
 
 # Install MTProto Suite
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=node
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=node
 
 # Copy old data to new location
 cp -r /backup/data.bak/* /opt/mtproto-suite/service-node/data/
@@ -618,7 +618,7 @@ docker compose restart mtproto-nginx
 If you encounter issues during migration:
 
 1. **Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md)** for common issues
-2. **Search existing issues**: https://github.com/mtproto-suite/mtproto-suite/issues
+2. **Search existing issues**: https://github.com/ns8-support/mtproto-suite/issues
 3. **Open new issue** with:
    - Old version (panel v1.x.x, node v1.x.x)
    - New version (v2.0.0)

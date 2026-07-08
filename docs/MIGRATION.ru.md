@@ -152,7 +152,7 @@ cp panel-backend/.env /backup/old-backend.env  # если существует
 
 # Клонировать новый репозиторий рядом
 cd /opt
-git clone https://github.com/mtproto-suite/mtproto-suite.git mtproto-suite-new
+git clone https://github.com/ns8-support/mtproto-suite.git mtproto-suite-new
 
 # Собрать новые образы
 cd mtproto-suite-new
@@ -225,7 +225,7 @@ docker compose down
 
 **На хосте панели:**
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=panel
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=panel
 ```
 
 Когда попросят, **используйте ТОТ ЖЕ порт**, что у старой установки (или другой, если хотите side-by-side).
@@ -278,7 +278,7 @@ cd /opt/mtproto-node
 cp -r data /backup/data.bak  # Бэкап
 
 # Установить MTProto Suite
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=node
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=node
 
 # Скопировать старые данные в новое место
 cp -r /backup/data.bak/* /opt/mtproto-suite/service-node/data/
@@ -618,7 +618,7 @@ docker compose restart mtproto-nginx
 Если у вас возникли проблемы во время миграции:
 
 1. **Проверьте [TROUBLESHOOTING.md](TROUBLESHOOTING.ru.md)** для частых проблем
-2. **Поищите существующие issues**: https://github.com/mtproto-suite/mtproto-suite/issues
+2. **Поищите существующие issues**: https://github.com/ns8-support/mtproto-suite/issues
 3. **Откройте новый issue** с:
    - Старая версия (panel v1.x.x, node v1.x.x)
    - Новая версия (v2.0.0)

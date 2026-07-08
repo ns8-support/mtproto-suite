@@ -44,6 +44,6 @@ For maintainers: technical considerations, dependencies, breaking changes.
 
 ## Checklist
 
-- [ ] I've checked [existing feature requests](https://github.com/mtproto-suite/mtproto-suite/issues?q=is%3Aissue+label%3Aenhancement)
+- [ ] I've checked [existing feature requests](https://github.com/ns8-support/mtproto-suite/issues?q=is%3Aissue+label%3Aenhancement)
 - [ ] I've considered how this fits with the project's scope
 - [ ] I'm willing to submit a PR (optional)

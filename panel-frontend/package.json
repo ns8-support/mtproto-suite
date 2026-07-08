@@ -13,7 +13,7 @@
     "@gravity-ui/icons": "^2.8.1",
     "@gravity-ui/navigation": "^2.15.0",
     "@gravity-ui/uikit": "^6.15.0",
-    "@mtproto-suite/shared": "file:../../shared",
+    "@mtproto-suite/shared": "file:../shared",
     "chart.js": "^4.5.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "chartjs-plugin-zoom": "^2.2.0",

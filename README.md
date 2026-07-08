@@ -158,7 +158,6 @@ mtproto-suite/
 ├── docker-compose.ssl.yml     # Overlay for HTTPS
 ├── docker-compose.both.yml    # Panel + node on one host (testing)
 ├── install.sh                 # 🔧 Unified interactive installer
-├── install-node.sh            # Alias for `install.sh --mode=node`
 ├── uninstall.sh
 ├── CHANGELOG.md               # Version history
 ├── LICENSE                    # MIT License
@@ -180,7 +179,7 @@ mtproto-suite/
 ssh root@panel.example.com
 
 # Run the installer
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=panel
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=panel
 ```
 
 The installer will:
@@ -197,7 +196,7 @@ The installer will:
 ssh root@proxy1.example.com
 
 # Run the installer
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=node
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=node
 ```
 
 **Or use the panel's "🛠 Install remotely" feature** — paste SSH credentials in the panel and it will install the service-node for you.
@@ -214,7 +213,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/m
 For testing or home use, install everything on one server:
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/mtproto-suite/mtproto-suite/master/install.sh) --mode=both -y
+bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=both -y
 ```
 
 This starts:
@@ -226,7 +225,7 @@ After installation, add the node in the panel: `IP=127.0.0.1, Port=8443, Token=<
 ### Option 3: Manual Build (Developers)
 
 ```bash
-git clone https://github.com/mtproto-suite/mtproto-suite.git
+git clone https://github.com/ns8-support/mtproto-suite.git
 cd mtproto-suite
 
 # Build all 4 packages

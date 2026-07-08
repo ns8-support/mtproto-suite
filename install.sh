@@ -28,7 +28,7 @@ BOLD=$'\033[1m'
 NC=$'\033[0m'
 
 # Дефолты
-REPO_URL="${REPO_URL:-https://github.com/mtproto-suite/mtproto-suite.git}"
+REPO_URL="${REPO_URL:-https://github.com/ns8-support/mtproto-suite.git}"
 INSTALL_DIR="${INSTALL_DIR:-/opt/mtproto-suite}"
 MODE=""
 SSL_MODE="none"
@@ -91,11 +91,14 @@ if [ "$MODE" = "uninstall" ]; then
   echo "  - SSL сертификаты"
   echo ""
   if [ "$AUTO_YES" != true ]; then
-    read -p "Продолжить? (yes/no): " CONFIRM
-    if [ "$CONFIRM" != "yes" ]; then
-      echo -e "${YELLOW}Отменено.${NC}"
-      exit 0
-    fi
+    read -p "Продолжить? (y/n): " CONFIRM
+    case "$CONFIRM" in
+      [yY]|[yY][eE][sS]) ;;
+      *)
+        echo -e "${YELLOW}Отменено.${NC}"
+        exit 0
+        ;;
+    esac
   fi
 
   if [ "$(id -u)" -ne 0 ]; then
@@ -151,6 +154,19 @@ esac
 
 if [ -z "$MODE" ]; then
   if [ "$AUTO_YES" != true ]; then
+    # Проверка: stdin должен быть терминалом для интерактивного выбора
+    if [ ! -t 0 ]; then
+      echo -e "${RED}Ошибка: интерактивный выбор невозможен (stdin не является терминалом).${NC}"
+      echo ""
+      echo "Укажите режим явно через аргумент --mode:"
+      echo "  bash install.sh --mode=panel    # Только панель"
+      echo "  bash install.sh --mode=node     # Только нода"
+      echo "  bash install.sh --mode=both     # Оба компонента"
+      echo ""
+      echo "Или запустите скрипт напрямую (не через pipe):"
+      echo "  bash install.sh"
+      exit 1
+    fi
     echo ""
     echo -e "${BOLD}Что устанавливать?${NC}"
     echo ""
@@ -252,8 +268,8 @@ if [ -d "$INSTALL_DIR/.git" ]; then
   for envfile in .env panel-backend/.env service-node/.env service-node/.env.bak .env.bak; do
     [ -f "$envfile" ] && cp "$envfile" "${envfile}.pre-update"
   done
-  git fetch origin master 2>/dev/null || true
-  git reset --hard origin/master
+  git fetch origin main 2>/dev/null || true
+  git reset --hard origin/main
   # Восстанавливаем
   for envfile in .env panel-backend/.env service-node/.env; do
     [ -f "${envfile}.pre-update" ] && mv "${envfile}.pre-update" "$envfile"
@@ -263,7 +279,7 @@ if [ -d "$INSTALL_DIR/.git" ]; then
 else
   echo -e "${CYAN}Клонирование репозитория...${NC}"
   rm -rf "$INSTALL_DIR"
-  git clone --branch master "$REPO_URL" "$INSTALL_DIR" || {
+  git clone --branch main "$REPO_URL" "$INSTALL_DIR" || {
     echo -e "${RED}Не удалось клонировать репозиторий${NC}"; exit 1;
   }
   cd "$INSTALL_DIR"
@@ -291,6 +307,18 @@ ask() {
       REPLY="$default"
       break
     fi
+    # Защита от зависания если stdin не терминал
+    if [ ! -t 0 ]; then
+      if [ -n "$default" ]; then
+        echo "$prompt [$default]: $default (auto — stdin не терминал)"
+        REPLY="$default"
+        break
+      else
+        echo -e "${RED}Ошибка: требуется ввод, но stdin не является терминалом.${NC}"
+        echo "Используйте -y для автоматического режима или запустите интерактивно."
+        exit 1
+      fi
+    fi
     read -p "$prompt [$default]: " REPLY
     REPLY=${REPLY:-$default}
     if [ -z "$regex" ] || [[ "$REPLY" =~ $regex ]]; then
@@ -308,6 +336,12 @@ ask_password() {
   while true; do
     if [ "$AUTO_YES" = true ]; then
       PASSWORD=$(openssl rand -base64 16)
+      return
+    fi
+    # Защита от зависания если stdin не терминал
+    if [ ! -t 0 ]; then
+      PASSWORD=$(openssl rand -base64 16)
+      echo "$prompt: [auto-generated — stdin не терминал]"
       return
     fi
     read -s -p "$prompt: " PASSWORD
@@ -409,24 +443,26 @@ install_panel() {
   DB_PASSWORD=$(openssl rand -hex 16)
 
   # Если .env уже есть — переиспользуем секреты
-  if [ -f panel-backend/.env ]; then
+  if [ -f .env ]; then
     if [ "$AUTO_YES" != true ]; then
       echo ""
-      echo -e "${YELLOW}Найден существующий panel-backend/.env${NC}"
-      read -p "Переиспользовать секреты и БД? (yes/no): " REUSE
+      echo -e "${YELLOW}Найден существующий .env${NC}"
+      read -p "Переиспользовать секреты и БД? (y/n): " REUSE
     else
       REUSE="yes"
     fi
-    if [ "$REUSE" = "yes" ]; then
-      source <(grep -E '^(JWT_SECRET|DB_PASSWORD|DB_NAME|DB_USER)=' panel-backend/.env || true)
-      JWT_SECRET="${JWT_SECRET:-$(openssl rand -hex 32)}"
-      DB_PASSWORD="${DB_PASSWORD:-$(openssl rand -hex 16)}"
-    fi
+    case "$REUSE" in
+      [yY]|[yY][eE][sS])
+        source <(grep -E '^(JWT_SECRET|DB_PASSWORD|DB_NAME|DB_USER)=' .env || true)
+        JWT_SECRET="${JWT_SECRET:-$(openssl rand -hex 32)}"
+        DB_PASSWORD="${DB_PASSWORD:-$(openssl rand -hex 16)}"
+        ;;
+    esac
   fi
 
-  # Запись .env
-  cat > panel-backend/.env << EOF
-PORT=80
+  # Запись .env в корень проекта (docker-compose ищет .env в CWD)
+  cat > .env << EOF
+PORT=${PANEL_PORT}
 ADMIN_USERNAME=${ADMIN_USERNAME}
 ADMIN_PASSWORD=${ADMIN_PASSWORD}
 JWT_SECRET=${JWT_SECRET}
@@ -436,7 +472,7 @@ DB_PASSWORD=${DB_PASSWORD}
 NODE_ENV=production
 NODE_REQUEST_TIMEOUT_MS=30000
 EOF
-  chmod 600 panel-backend/.env
+  chmod 600 .env
 
   # SSL конфигурация
   configure_ssl
@@ -452,17 +488,30 @@ EOF
   echo -e "${CYAN}Запуск контейнеров панели...${NC}"
   export COMPOSE_PROJECT_NAME=mtproto-panel
 
+  # Пробуем скачать образы из GHCR, если не получается — собираем локально
+  echo -e "${CYAN}Попытка загрузки образов из GHCR...${NC}"
   if [ "$SSL_MODE" != "none" ]; then
-    # С SSL — используем отдельный compose файл с SSL volume
-    COMPOSE_FILE="docker-compose.yml:docker-compose.ssl.yml" docker compose up -d --build
+    if COMPOSE_FILE="docker-compose.yml:docker-compose.ssl.yml" docker compose pull 2>/dev/null; then
+      echo -e "${GREEN}Образы загружены из GHCR${NC}"
+      COMPOSE_FILE="docker-compose.yml:docker-compose.ssl.yml" docker compose up -d
+    else
+      echo -e "${YELLOW}Образы не найдены в GHCR, локальная сборка...${NC}"
+      COMPOSE_FILE="docker-compose.yml:docker-compose.ssl.yml" docker compose up -d --build
+    fi
   else
-    docker compose up -d --build
+    if docker compose pull 2>/dev/null; then
+      echo -e "${GREEN}Образы загружены из GHCR${NC}"
+      docker compose up -d
+    else
+      echo -e "${YELLOW}Образы не найдены в GHCR, локальная сборка...${NC}"
+      docker compose up -d --build
+    fi
   fi
 
   # Ждём готовности
   echo -e "${CYAN}Ожидание готовности backend...${NC}"
   for i in {1..30}; do
-    if docker compose exec -T backend wget --quiet --tries=1 --spider http://localhost:80/api/health 2>/dev/null; then
+    if docker compose exec -T backend wget --quiet --tries=1 --spider http://localhost:3000/api/health 2>/dev/null; then
       break
     fi
     sleep 2
@@ -486,7 +535,7 @@ EOF
   echo ""
   if [ "$MODE" = "panel" ]; then
     echo -e "${YELLOW}Следующий шаг: установите service-node на прокси-сервере${NC}"
-    echo -e "${CYAN}  bash <(wget -qO- ${REPO_URL}/raw/master/install.sh) --mode=node${NC}"
+    echo -e "${CYAN}  bash <(wget -qO- https://raw.githubusercontent.com/ns8-support/mtproto-suite/main/install.sh) --mode=node${NC}"
     echo ""
     echo -e "${YELLOW}Или установите оба компонента здесь для теста:${NC}"
     echo -e "${CYAN}  cd ${INSTALL_DIR} && bash install.sh --mode=both -y${NC}"
@@ -538,19 +587,21 @@ install_node() {
     if [ "$AUTO_YES" != true ]; then
       echo ""
       echo -e "${YELLOW}Найден существующий service-node/.env${NC}"
-      read -p "Переиспользовать токен? (yes/no): " REUSE
+      read -p "Переиспользовать токен? (y/n): " REUSE
     else
       REUSE="yes"
     fi
-    if [ "$REUSE" = "yes" ]; then
-      source <(grep -E '^AUTH_TOKEN=' service-node/.env || true)
-      AUTH_TOKEN="${AUTH_TOKEN:-$(openssl rand -hex 32)}"
-    fi
+    case "$REUSE" in
+      [yY]|[yY][eE][sS])
+        source <(grep -E '^AUTH_TOKEN=' service-node/.env || true)
+        AUTH_TOKEN="${AUTH_TOKEN:-$(openssl rand -hex 32)}"
+        ;;
+    esac
   fi
 
   # Запись .env
   cat > service-node/.env << EOF
-PORT=8443
+PORT=${NODE_PORT}
 NGINX_PORT=${NGINX_PORT}
 AUTH_TOKEN=${AUTH_TOKEN}
 NAT_IP=${NAT_IP}
@@ -574,10 +625,12 @@ EOF
   cd service-node
   export COMPOSE_PROJECT_NAME=mtproto-node
 
+  # Пробуем скачать образ из GHCR, если не получается — собираем локально
+  echo -e "${CYAN}Попытка загрузки образа из GHCR...${NC}"
   if docker compose pull 2>/dev/null; then
-    echo -e "${GREEN}Образ загружен${NC}"
+    echo -e "${GREEN}Образ загружен из GHCR${NC}"
   else
-    echo -e "${YELLOW}Локальная сборка образа...${NC}"
+    echo -e "${YELLOW}Образ не найден в GHCR, локальная сборка...${NC}"
     docker compose build || { echo -e "${RED}Сборка не удалась${NC}"; exit 1; }
   fi
 
@@ -700,9 +753,19 @@ EOF
     COMPOSE_FILE="docker-compose.both.yml"
   fi
 
-  docker compose -f "$COMPOSE_FILE" up -d --build || {
-    echo -e "${RED}Не удалось запустить контейнеры${NC}"; exit 1;
-  }
+  # Пробуем скачать образы из GHCR, если не получается — собираем локально
+  echo -e "${CYAN}Попытка загрузки образов из GHCR...${NC}"
+  if docker compose -f "$COMPOSE_FILE" pull 2>/dev/null; then
+    echo -e "${GREEN}Образы загружены из GHCR${NC}"
+    docker compose -f "$COMPOSE_FILE" up -d || {
+      echo -e "${RED}Не удалось запустить контейнеры${NC}"; exit 1;
+    }
+  else
+    echo -e "${YELLOW}Образы не найдены в GHCR, локальная сборка...${NC}"
+    docker compose -f "$COMPOSE_FILE" up -d --build || {
+      echo -e "${RED}Не удалось запустить контейнеры${NC}"; exit 1;
+    }
+  fi
 
   # Ждём готовности панели
   echo -e "${CYAN}Ожидание готовности панели...${NC}"

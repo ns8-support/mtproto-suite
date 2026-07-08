@@ -62,7 +62,7 @@
 
 **Email:** ns8sup@gmail.com
 
-**GitHub:** https://github.com/mtproto-suite/mtproto-suite/security/advisories/new (приватное раскрытие)
+**GitHub:** https://github.com/ns8-support/mtproto-suite/security/advisories/new (приватное раскрытие)
 
 **НЕ** открывайте публичный GitHub issue для уязвимостей безопасности.
 
@@ -572,7 +572,7 @@ MTProto Suite **не собирает персональные данные** к
 ## 📞 Контакт по безопасности
 
 - **Email:** security@mtproto-suite.example.com (placeholder)
-- **GitHub Security:** https://github.com/mtproto-suite/mtproto-suite/security
+- **GitHub Security:** https://github.com/ns8-support/mtproto-suite/security
 - **PGP Key:** TBD (будет опубликован на сайте)
 
-Для не-безопасных вопросов используйте GitHub Issues: https://github.com/mtproto-suite/mtproto-suite/issues
+Для не-безопасных вопросов используйте GitHub Issues: https://github.com/ns8-support/mtproto-suite/issues

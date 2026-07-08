@@ -336,7 +336,7 @@ Set `LOG_LEVEL=debug` in respective `.env` file, restart container.
 
 ### Where do I report bugs?
 
-https://github.com/mtproto-suite/mtproto-suite/issues
+https://github.com/ns8-support/mtproto-suite/issues
 
 Include:
 - OS version
@@ -350,8 +350,8 @@ Include:
 ## 🤔 Still have questions?
 
 - 📖 Read the [docs](../README.md)
-- 🐛 Search [GitHub issues](https://github.com/mtproto-suite/mtproto-suite/issues)
-- 💬 Open a [GitHub discussion](https://github.com/mtproto-suite/mtproto-suite/discussions)
+- 🐛 Search [GitHub issues](https://github.com/ns8-support/mtproto-suite/issues)
+- 💬 Open a [GitHub discussion](https://github.com/ns8-support/mtproto-suite/discussions)
 - 📧 Email (TBD)
 
 ---

@@ -170,7 +170,7 @@ export interface RemoteInstallParams {
   nginxPort?: number;
   /** NAT_IP для VPN-режима. */
   natIp?: string;
-  /** Repo URL (default https://github.com/mtproto-suite/mtproto-suite.git). */
+  /** Repo URL (default https://github.com/ns8-support/mtproto-suite.git). */
   repoUrl?: string;
   /** Install dir на удалённом сервере. */
   installDir?: string;
@@ -193,7 +193,7 @@ export interface RemoteInstallResult {
 
 const DEFAULT_NODE_PORT = 8443;
 const DEFAULT_NGINX_PORT = 443;
-const DEFAULT_REPO_URL = 'https://github.com/mtproto-suite/mtproto-suite.git';
+const DEFAULT_REPO_URL = 'https://github.com/ns8-support/mtproto-suite.git';
 const DEFAULT_INSTALL_DIR = '/opt/mtproto-suite';
 
 /**
@@ -313,11 +313,11 @@ echo "Utilities ready"
       command: `
 if [ -d "${installDir}/.git" ]; then
   cd ${installDir}
-  git fetch origin master
-  git reset --hard origin/master
+  git fetch origin main
+  git reset --hard origin/main
 else
   rm -rf ${installDir}
-  git clone --branch master "${repoUrl}" ${installDir}
+  git clone --branch main "${repoUrl}" ${installDir}
 fi
 `,
       timeoutMs: 120000,
@@ -344,10 +344,11 @@ echo ".env created"
       command: `
 cd ${installDir}/service-node
 docker network create mtproto-net 2>/dev/null || true
+echo "Attempting to pull image from GHCR..."
 if docker compose pull 2>/dev/null; then
-  echo "Image pulled from registry"
+  echo "Image pulled from GHCR"
 else
-  echo "Building locally..."
+  echo "Image not found in GHCR, building locally..."
   docker compose build
 fi
 docker compose up -d

@@ -37,7 +37,7 @@ We take security seriously. If you discover a vulnerability:
 
 **Email:** ns8sup@gmail.com
 
-**GitHub:** https://github.com/mtproto-suite/mtproto-suite/security/advisories/new (private disclosure)
+**GitHub:** https://github.com/ns8-support/mtproto-suite/security/advisories/new (private disclosure)
 
 **DO NOT** open a public GitHub issue for security vulnerabilities.
 
@@ -590,7 +590,7 @@ Run through this checklist before production deployment:
 ## 📞 Security Contact
 
 - **Email:** security@mtproto-suite.example.com (placeholder)
-- **GitHub Security:** https://github.com/mtproto-suite/mtproto-suite/security
+- **GitHub Security:** https://github.com/ns8-support/mtproto-suite/security
 - **PGP Key:** TBD (will be published on website)
 
-For non-security issues, use GitHub Issues: https://github.com/mtproto-suite/mtproto-suite/issues
+For non-security issues, use GitHub Issues: https://github.com/ns8-support/mtproto-suite/issues
