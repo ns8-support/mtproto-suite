@@ -13,6 +13,7 @@ import allProxiesRoutes from './routes/allProxies';
 import remoteInstallRoutes from './routes/remote-install';
 import sslRoutes from './routes/ssl';
 import monitoringRoutes from './routes/nodes-monitoring';
+import panelRoutes from './routes/panel';
 import { logger } from '../../shared/utils/logger';
 
 const app = express();
@@ -164,6 +165,7 @@ app.use('/api/nodes/:id/netbird', sshLimiter);
 
 app.use('/api/ssl', sslRoutes);
 app.use('/api/nodes', monitoringRoutes);
+app.use('/api/panel', panelRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });

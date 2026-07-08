@@ -24,6 +24,7 @@ router.post('/test-ssh', async (req: AuthRequest, res: Response) => {
   const username = sanitizeString(req.body?.username);
   const password = typeof req.body?.password === 'string' ? req.body.password : undefined;
   const privateKey = typeof req.body?.privateKey === 'string' ? req.body.privateKey : undefined;
+  const passphrase = typeof req.body?.passphrase === 'string' ? req.body.passphrase : undefined;
 
   if (!host || (!isValidIPv4(host) && !isValidDomain(host))) {
     res.status(400).json({ error: 'Invalid host (must be IP or domain)' });
@@ -48,6 +49,7 @@ router.post('/test-ssh', async (req: AuthRequest, res: Response) => {
     username,
     password,
     privateKey,
+    passphrase,
   };
 
   const result = await testSshConnection(credentials);

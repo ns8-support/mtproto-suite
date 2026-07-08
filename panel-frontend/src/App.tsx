@@ -21,6 +21,7 @@ import { LoginPage } from './pages/Login/Login';
 import { NodesPage } from './pages/Nodes/Nodes';
 import { NodeDetailPage } from './pages/NodeDetail/NodeDetail';
 import { SSLPage } from './pages/SSL/SSL';
+import { PanelServerPage } from './pages/PanelServer/PanelServerPage';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/nodes" element={<NodesPage />} />
         <Route path="/nodes/:id" element={<NodeDetailPage />} />
         <Route path="/ssl" element={<SSLPage />} />
+        <Route path="/panel" element={<PanelServerPage />} />
         <Route path="/settings" element={<div>Settings (TODO)</div>} />
       </Route>
 

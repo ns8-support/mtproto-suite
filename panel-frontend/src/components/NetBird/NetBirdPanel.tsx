@@ -3,6 +3,10 @@ import {
   getNetBirdStatus,
   installNetBird,
   uninstallNetBird,
+  getPanelNetBirdStatus,
+  installPanelNetBird,
+  uninstallPanelNetBird,
+  disconnectPanelNetBird,
   type SshCredentials,
 } from '../../api/monitoring';
 import type { NetBirdStatus } from '@mtproto-suite/shared/types';
@@ -23,7 +27,8 @@ import type { NetBirdStatus } from '@mtproto-suite/shared/types';
  */
 
 interface NetBirdPanelProps {
-  nodeId: number;
+  /** ID ноды. Для сервера панели не передаётся (используются /api/panel/... эндпоинты). */
+  nodeId?: number;
   nodeName: string;
   ssh: SshCredentials;
   initialStatus: NetBirdStatus | null;
@@ -33,6 +38,7 @@ interface NetBirdPanelProps {
 type Step = 'idle' | 'installing' | 'uninstalling' | 'error';
 
 export function NetBirdPanel({ nodeId, nodeName, ssh, initialStatus, onStatusChange }: NetBirdPanelProps) {
+  const isPanel = nodeId == null;
   const [status, setStatus] = useState<NetBirdStatus | null>(initialStatus);
   const [step, setStep] = useState<Step>('idle');
   const [setupKey, setSetupKey] = useState('');
@@ -47,10 +53,20 @@ export function NetBirdPanel({ nodeId, nodeName, ssh, initialStatus, onStatusCha
     }
   }, [initialStatus]);
 
+  // Для сервера панели нет кешированного статуса в БД — подтягиваем при монтировании.
+  useEffect(() => {
+    if (isPanel && !initialStatus && ssh) {
+      refresh();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const refresh = async () => {
     setError(null);
     try {
-      const newStatus = await getNetBirdStatus(nodeId, ssh);
+      const newStatus = isPanel
+        ? await getPanelNetBirdStatus(ssh)
+        : await getNetBirdStatus(nodeId as number, ssh);
       setStatus(newStatus);
       if (onStatusChange) onStatusChange(newStatus);
     } catch (err: any) {
@@ -69,11 +85,14 @@ export function NetBirdPanel({ nodeId, nodeName, ssh, initialStatus, onStatusCha
     setLog(null);
 
     try {
-      const result = await installNetBird(nodeId, ssh, {
+      const payload = {
         setupKey,
         managementUrl: managementUrl || undefined,
         hostname: hostname || undefined,
-      });
+      };
+      const result = isPanel
+        ? await installPanelNetBird(ssh, payload)
+        : await installNetBird(nodeId as number, ssh, payload);
 
       setLog(result.log);
 
@@ -93,14 +112,31 @@ export function NetBirdPanel({ nodeId, nodeName, ssh, initialStatus, onStatusCha
   };
 
   const handleUninstall = async () => {
-    if (!confirm(`Удалить NetBird с ноды ${nodeName}?`)) return;
+    if (!confirm(`Удалить NetBird с ${isPanel ? 'сервера панели' : `ноды ${nodeName}`}?`)) return;
 
     setStep('uninstalling');
     setError(null);
     try {
-      await uninstallNetBird(nodeId, ssh);
+      if (isPanel) {
+        await uninstallPanelNetBird(ssh);
+      } else {
+        await uninstallNetBird(nodeId as number, ssh);
+      }
       setStatus(null);
       if (onStatusChange) onStatusChange(null);
+      setStep('idle');
+    } catch (err: any) {
+      setError(err.message || 'Network error');
+      setStep('error');
+    }
+  };
+
+  const handleDisconnect = async () => {
+    setStep('uninstalling');
+    setError(null);
+    try {
+      await disconnectPanelNetBird(ssh);
+      await refresh();
       setStep('idle');
     } catch (err: any) {
       setError(err.message || 'Network error');
@@ -252,6 +288,15 @@ export function NetBirdPanel({ nodeId, nodeName, ssh, initialStatus, onStatusCha
       )}
 
       <div className="action-buttons">
+        {isPanel && status.connected && (
+          <button
+            onClick={handleDisconnect}
+            disabled={step === 'uninstalling'}
+            className="btn-secondary"
+          >
+            {step === 'uninstalling' ? '⏳ Disconnecting...' : '🔌 Disconnect'}
+          </button>
+        )}
         <button onClick={refresh} className="btn-secondary">
           🔄 Refresh
         </button>

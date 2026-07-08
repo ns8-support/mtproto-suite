@@ -154,3 +154,53 @@ export async function uninstallNetBird(
     { timeoutMs: 120000 }
   );
 }
+
+// ============ Panel server (host running the panel) ============
+// Те же операции NetBird, но для самого сервера панели (доступ по SSH к
+// хосту, без привязки к node_id в БД).
+
+export async function getPanelSystemInfo(
+  ssh: SshCredentials
+): Promise<SystemInfo> {
+  return request('POST', `/api/panel/system-info`, { ssh }, { timeoutMs: 30000 });
+}
+
+export async function getPanelNetBirdStatus(
+  ssh: SshCredentials
+): Promise<NetBirdStatus> {
+  return request('POST', `/api/panel/netbird/status`, { ssh }, { timeoutMs: 30000 });
+}
+
+export async function installPanelNetBird(
+  ssh: SshCredentials,
+  data: NetBirdInstallRequest
+): Promise<RestartResult & { status?: NetBirdStatus }> {
+  return request(
+    'POST',
+    `/api/panel/netbird/install`,
+    { ssh, ...data },
+    { timeoutMs: 300000 }
+  );
+}
+
+export async function uninstallPanelNetBird(
+  ssh: SshCredentials
+): Promise<RestartResult> {
+  return request(
+    'POST',
+    `/api/panel/netbird/uninstall`,
+    { ssh },
+    { timeoutMs: 120000 }
+  );
+}
+
+export async function disconnectPanelNetBird(
+  ssh: SshCredentials
+): Promise<RestartResult> {
+  return request(
+    'POST',
+    `/api/panel/netbird/disconnect`,
+    { ssh },
+    { timeoutMs: 60000 }
+  );
+}

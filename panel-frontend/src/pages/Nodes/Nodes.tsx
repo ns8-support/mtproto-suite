@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNodes } from '../../hooks/useNodes';
 import { RemoteInstallDialog } from '../../components/RemoteInstall/RemoteInstallDialog';
+import { AddNodeDialog } from '../../components/AddNodeDialog/AddNodeDialog';
 import type { RemoteInstallResult } from '../../api/remote-install';
 
 /**
@@ -98,15 +99,10 @@ export function NodesPage() {
       )}
 
       {showAddDialog && (
-        <div className="dialog-overlay" onClick={() => setShowAddDialog(false)}>
-          <div className="dialog-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Добавить существующую ноду</h3>
-            <p>Этот диалог реализуется в AddNodeDialog.tsx компоненте.</p>
-            <button onClick={() => setShowAddDialog(false)} className="btn-secondary">
-              Закрыть
-            </button>
-          </div>
-        </div>
+        <AddNodeDialog
+          onClose={() => setShowAddDialog(false)}
+          onSuccess={() => refetch()}
+        />
       )}
 
       {showRemoteInstall && (

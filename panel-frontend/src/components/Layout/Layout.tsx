@@ -45,6 +45,9 @@ export function Layout() {
           <NavLink to="/ssl" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
             SSL
           </NavLink>
+          <NavLink to="/panel" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
+            Сервер панели
+          </NavLink>
         </nav>
 
         <div className="topbar-user">
