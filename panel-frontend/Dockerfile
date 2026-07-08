@@ -10,7 +10,7 @@ RUN npm install --no-audit --no-fund && npm run build
 WORKDIR /app
 COPY panel-frontend ./panel-frontend
 WORKDIR /app/panel-frontend
-RUN npm link ../shared && npm install --no-audit --no-fund && npm run build
+RUN npm install --no-audit --no-fund && npm run build
 
 # ============ Production stage — nginx для SPA ============
 FROM nginx:alpine

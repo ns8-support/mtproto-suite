@@ -10,7 +10,7 @@ RUN npm install --no-audit --no-fund && npm run build
 WORKDIR /app
 COPY panel-backend ./panel-backend
 WORKDIR /app/panel-backend
-RUN npm link ../shared && npm install --no-audit --no-fund && npm run build && npm prune --production
+RUN npm install --no-audit --no-fund && npm run build && npm prune --production
 
 FROM node:20-alpine
 
@@ -21,7 +21,10 @@ WORKDIR /app
 COPY --from=builder /app/panel-backend/dist ./dist
 COPY --from=builder /app/panel-backend/package.json ./
 COPY --from=builder /app/panel-backend/node_modules ./node_modules
-COPY --from=builder /app/shared/package.json /app/shared/dist /app/shared/
+COPY --from=builder /app/shared/package.json /app/shared/
+COPY --from=builder /app/shared/dist /app/shared/dist
+COPY --from=builder /app/shared/types /app/shared/types
+COPY --from=builder /app/shared/utils /app/shared/utils
 
 COPY panel-backend/update.sh /app/project/update.sh
 RUN chmod +x /app/project/update.sh
